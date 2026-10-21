@@ -1,3 +1,5 @@
 data/OpenET/.env
 data/OpenET/openET.venv
 /.vscode
+data/FMMP/fmmp.venv
+data/FMMP/farmland_*
