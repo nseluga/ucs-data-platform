@@ -1,3 +1,8 @@
 requests==2.32.3
 pandas>=2.0
 dotenv
+geopandas
+folium
+mapclassify
+matplotlib
+ipykernel
