@@ -52,3 +52,4 @@ gdf = query(year)
 print(gdf.groupby("polygon_ty")["polygon_ac"].sum())
 
 gdf.to_file(f"farmland_{year}.shp")
+gdf.to_file(f"farmland_{year}.geojson", driver="GeoJSON")
