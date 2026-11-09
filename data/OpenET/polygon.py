@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import requests
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import Polygon
 
 # load secrets from .env so the API key never lives in the code
 load_dotenv()
@@ -14,18 +16,19 @@ args = {
     "2021-12-31"
   ],
   "interval": "monthly",
+  # a Prime Farmland polygon from FMMP (Fresno County, ~112 acres), so OpenET overlaps farmland
   "geometry": [
-    -121.00747,
-    44.2442,
-    -121.00747,
-    44.24742,
-    -121.00295,
-    44.24742,
-    -121.00295,
-    44.24422
+    -120.082102,
+    36.087047,
+    -120.091694,
+    36.079649,
+    -120.093123,
+    36.079657,
+    -120.093046,
+    36.086956
   ],
   "model": "SIMS",
-  "variable": "ETo",
+  "variable": "ET",
   "reference_et": "gridMET",
   "reducer": "mean",
   "units": "mm",
@@ -47,9 +50,10 @@ def query(args):
   )
 
   # convert to dataframe structure
+  # API names the column after the variable (lowercase), so name it after the model instead
   df = pd.DataFrame(resp.json())  \
     .set_index("time")  \
-    .rename(columns={args["variable"] : args["model"]})
+    .rename(columns=lambda _: args["model"])
 
   return df
 
@@ -68,3 +72,11 @@ df = pd.concat(dfs, axis=1)
 print(df)
 
 df.to_csv("openet.csv")
+
+# attach the query polygon to every month: flat lon/lat list -> (lon, lat) pairs
+# (shapely closes the ring itself)
+coords = list(zip(args["geometry"][::2], args["geometry"][1::2]))
+gdf = gpd.GeoDataFrame(df.reset_index(), geometry=[Polygon(coords)] * len(df), crs=4326)
+
+gdf.to_file("openet.shp")
+gdf.to_file("openet.geojson", driver="GeoJSON")

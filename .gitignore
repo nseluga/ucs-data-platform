@@ -3,3 +3,9 @@ data/OpenET/openET.venv
 /.vscode
 data/FMMP/fmmp.venv
 data/FMMP/farmland_*
+data/OpenET/openet.shp
+data/OpenET/openet.shx
+data/OpenET/openet.dbf
+data/OpenET/openet.prj
+data/OpenET/openet.cpg
+data/OpenET/openet.geojson
