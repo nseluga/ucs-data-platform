@@ -6,3 +6,5 @@ folium
 mapclassify
 matplotlib
 ipykernel
+shapely
+pytest
